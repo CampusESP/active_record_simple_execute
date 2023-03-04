@@ -6,6 +6,8 @@ ActiveSupport.on_load(:active_record) do
 
   ActiveRecord::Base.class_eval do
     def self.simple_execute(sql_str, *sql_vars, **kwargs)
+      # If sql_str is an array, combine with sql_vars, then "re-divide"
+      sql_str, *sql_vars = sql_str.concat(sql_vars) if sql_str.is_a?(Array)
       sql_vars << kwargs unless kwargs.empty?
 
       ### must use send because this method is private is Rails 5.1 only, Public in 5.0 and 5.2
